@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { GithubService } from 'src/app/shared/services/github.service';
 
 @Component({
   selector: 'app-detail',
@@ -7,9 +9,27 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DetailComponent implements OnInit {
 
-  constructor() { }
+  username: string;
+  content: any = [];
+  repo: any = [];
+
+  constructor(private route: ActivatedRoute,
+    private serviceGithub: GithubService
+    ) {
+      this.username = this.route.snapshot.paramMap.get('username');
+    }
 
   ngOnInit(): void {
+    this.getInfoUser();
+    this.getReps();
+  }
+
+  getInfoUser(){
+    this.serviceGithub.getInfoUser(this.username).subscribe((res) => (this.content = res))
+  }
+
+  getReps(){
+    this.serviceGithub.getRepByUser(this.username, 1, 10).subscribe((res) => (this.repo = res))
   }
 
 }
