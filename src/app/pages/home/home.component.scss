@@ -1,0 +1,15 @@
+.history {
+    position: relative;
+    
+    .link {
+        position: absolute;
+        right:0;
+        top:09px;
+        right: 50px;
+        text-decoration: underline;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}

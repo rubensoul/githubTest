@@ -1,12 +1,12 @@
 
 <div class="s130">
   <form>
-    <div *ngIf="termSearch">
+    <div class="history" *ngIf="termSearch">
         <select class="form-select" (change)="selectChange($event)">
           <option selected>Search again</option>
           <option *ngFor="let item of termSearch" [value]="item.term">{{item?.term}} | <small>{{item?.date | date:'yyyy-MM-dd HH:mm:ss'}}</small></option>
         </select>
-        <p (click)="removeTerm()">clear</p> 
+        <small class="link" (click)="removeTerm()">clear</small> 
     </div>
     <br>
     <div class="inner-form">
@@ -38,7 +38,7 @@
     </div>
   </div>
 
-  <div class="d-grid gap-2 d-md-flex mb-5" *ngIf="content.items">
+  <div class="d-grid gap-2 d-md-flex mb-5" *ngIf="content.items && content.total_count > 12">
     <button class="btn btn-primary" (click)="nav(-1)">Previous</button>
     <button class="btn btn-primary" (click)="nav(1)">Next</button>
   </div>

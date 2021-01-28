@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { of, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { GithubService } from 'src/app/shared/services/github.service';
@@ -17,11 +18,22 @@ export class HomeComponent implements OnInit {
   termSearch: any = [];
   valueTerm: string = '';
 
-  constructor(private serviceGithub: GithubService) { }
+  constructor(private serviceGithub: GithubService,
+    private route: ActivatedRoute,) {
+
+   }
 
   ngOnInit(): void {
     this.searchRep();
     this.getTerm();
+
+    this.route.queryParams.subscribe(params => {
+      let newterms = params['newterms'];
+      if (newterms) {
+        this.valueTerm = newterms;
+        this.search(this.valueTerm)
+      }
+    });
   }
 
   searchRep(){
@@ -32,7 +44,7 @@ export class HomeComponent implements OnInit {
         term => 
           term 
             ? 
-            this.serviceGithub.searchUser(term, this.page, 12)
+            this.serviceGithub.searchUser(term, this.page = 1, 12)
             : 
             of<any>([])
       ),
@@ -47,9 +59,13 @@ export class HomeComponent implements OnInit {
   }
 
   search(term){
-    this.termValue = term.target.value
+    if (term.target) {
+      this.termValue = term.target.value
+    } else {
+      this.termValue = term;
+    }
     if (this.termValue && this.termValue.trim() !== '') {
-      this.searchTerms.next(term.target.value);
+      this.searchTerms.next(this.termValue);
     } else {
       this.searchTerms.next('');
     }
@@ -68,11 +84,9 @@ export class HomeComponent implements OnInit {
 
   getTerm(){
     this.termSearch = JSON.parse(localStorage.getItem('term'));
-    // this.termSearch.sort((val)=> {return new Date(val.date)})
-
-    this.termSearch.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-
-
+    if (this.termSearch) {
+      this.termSearch.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    }
   }
 
   selectChange(event) {
